@@ -1,6 +1,7 @@
 package com.ning.phatamorgana;
 
 import javax.swing.UIManager;
+import com.ning.phatamorgana.views.ApplicationWindow;
 
 /**
  * The top-level class for the application.
@@ -9,9 +10,8 @@ public class Application {
 
 	/**
 	 * Runs the application.
-	 * @throws Exception 
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		initLAF();
 		new ApplicationWindow().setVisible(true);
 	}
@@ -19,7 +19,7 @@ public class Application {
     /**
      * Sets up the look and feel.
      */
-    private static void initLAF() throws Exception {
+    private static void initLAF() {
         // Apple stuff from Raj Singh 2010-10-19
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("apple.awt.showGrowBox", "true");
@@ -30,7 +30,11 @@ public class Application {
         if (laf == null) { 
         	laf = UIManager.getSystemLookAndFeelClassName(); 
     	}
-        UIManager.setLookAndFeel(laf);
+        try {
+			UIManager.setLookAndFeel(laf);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
     }
 	
 }

@@ -11,7 +11,7 @@
  * @see "The Tree Control: Managing Data with JTree", http://www.informit.com/articles/article.aspx?p=26327&seqNum=16
  */
 
-package com.ning.phatamorgana; 
+package com.ning.phatamorgana.views; 
 
 import javax.swing.*; 
 import javax.swing.tree.*; 
@@ -65,8 +65,7 @@ public class FileTree extends JTree {
 
 	// Inner class that represents a node in this file system tree
 	protected static class FileTreeNode extends DefaultMutableTreeNode {
-		public FileTreeNode(File parent, String name)
-		throws SecurityException, FileNotFoundException { 
+		public FileTreeNode(File parent, String name) throws SecurityException, FileNotFoundException { 
 			this.name = name; 
 
 			// See if this node exists and whether it is a directory
