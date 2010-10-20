@@ -8,13 +8,13 @@ import com.ning.phatamorgana.views.ApplicationWindow;
  */
 public class Application {
 
-	/**
-	 * Runs the application.
-	 */
-	public static void main(String[] args) {
-		initLAF();
-		new ApplicationWindow().setVisible(true);
-	}
+    /**
+     * Runs the application.
+     */
+    public static void main(String[] args) {
+        initLAF();
+        new ApplicationWindow().setVisible(true);
+    }
 
     /**
      * Sets up the look and feel.
@@ -28,13 +28,13 @@ public class Application {
         }
         String laf = System.getProperty("swing.defaultlaf");
         if (laf == null) { 
-        	laf = UIManager.getSystemLookAndFeelClassName(); 
-    	}
+            laf = UIManager.getSystemLookAndFeelClassName(); 
+        }
         try {
-			UIManager.setLookAndFeel(laf);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+            UIManager.setLookAndFeel(laf);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
-	
+    
 }
