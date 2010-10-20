@@ -31,7 +31,6 @@ public class BeanShellScriptLoader {
             Interpreter interpreter = new Interpreter();
             interpreter.set("context", context);
             interpreter.eval("import com.ning.phatamorgana.models.*");
-            interpreter.eval("import junit.framework.*");
             for (File f : directory.listFiles()) {
                 if (f.isDirectory()) {
                     loadScripts(f);

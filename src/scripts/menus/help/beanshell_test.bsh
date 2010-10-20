@@ -2,12 +2,12 @@
 // Description: Smoke test that checks that BeanShell unit tests are working
 // Author: Jonathan Aquino
 
-public class BeanShellSmokeTest extends TestCase {
+public class BeanShellSmokeTest extends UnitTest {
 
-    public void test() {
-    	assertTrue(true);
+    public void run() {
+    	assertTrue("BeanShell smoke test", true);
     }
 
 }
 
-context.get("testSuite").addTestSuite(BeanShellSmokeTest.class);
+context.get("unitTests").add(new BeanShellSmokeTest());

@@ -1,9 +1,34 @@
 // Name: Run Unit Tests
-// Description: Runs all known unit tests using JUnit
+// Description: Runs all unit tests for the scripts
 // Author: Jonathan Aquino
 
 context.get("applicationWindow").addMenu(new String[] {"Help", "Run Unit Tests"}, new ActionListener()  {
     public void actionPerformed(ActionEvent e) {
-        new junit.textui.TestRunner().run(context.get("testSuite"));
+		List assertions = new ArrayList();
+		List failures = new ArrayList();
+		for (unitTest : context.get("unitTests").toArray()) {
+		    unitTest.run();
+		    assertions.addAll(unitTest.getAssertions());
+		    for (assertion : unitTest.getAssertions().toArray()) {
+		        System.out.print(assertion.getValue() ? '.' : 'F');
+		        if (!assertion.getValue()) {
+		        	failures.add(assertion);
+		        }
+		    }
+		}
+		System.out.println();
+		System.out.println();
+		if (failures.size() > 0) {
+		    System.out.println(failures.size() == 1 ? "There was 1 failure:" : "There were " + failures.size() + " failures");
+		    System.out.println();
+		    for (int i = 0; i < failures.size(); i++) {
+				System.out.println((i+1) + ") " + failures.get(i).getDescription());    	
+		    }
+		    System.out.println();
+		    System.out.println("FAILURES! (" + context.get("unitTests").size() + " tests, " + assertions.size() + " assertions, " + failures.size() + " failures)");
+		} else {
+			System.out.println("OK (" + context.get("unitTests").size() + " tests, " + assertions.size() + " assertions)");		    
+		}
     }
 });
+

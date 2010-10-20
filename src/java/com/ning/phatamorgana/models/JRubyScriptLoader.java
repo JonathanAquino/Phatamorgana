@@ -33,7 +33,7 @@ public class JRubyScriptLoader {
             ScriptingContainer container = new ScriptingContainer(LocalVariableBehavior.PERSISTENT);
             container.put("context", context);
             container.runScriptlet("require 'java'");
-            container.runScriptlet("java_import 'junit.framework.TestCase'");
+            container.runScriptlet("java_import 'com.ning.phatamorgana.models.UnitTest'");
             for (File f : directory.listFiles()) {
                 if (f.isDirectory()) {
                     loadScripts(f);

@@ -1,16 +1,16 @@
 package com.ning.phatamorgana;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import junit.framework.TestSuite;
-
 import com.ning.phatamorgana.models.BeanShellScriptLoader;
 import com.ning.phatamorgana.models.JRubyScriptLoader;
+import com.ning.phatamorgana.models.UnitTest;
 import com.ning.phatamorgana.views.ApplicationWindow;
 
 /**
@@ -38,7 +38,7 @@ public class Application {
         applicationWindow.setVisible(true);
         final Map<String, Object> context = new HashMap<String, Object>();
         context.put("applicationWindow", applicationWindow);
-        context.put("testSuite", new TestSuite());
+        context.put("unitTests", new ArrayList<UnitTest>());
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
