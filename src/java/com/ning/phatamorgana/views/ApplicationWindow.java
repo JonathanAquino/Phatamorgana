@@ -81,7 +81,7 @@ public class ApplicationWindow extends JFrame {
      */
     private void addMenus() {
         add(menuBar, BorderLayout.NORTH);
-        addMenu(new String [] { "File", "Select Source Tree…" }, new ActionListener()  {
+        addMenu(new String[] {"File", "Select Source Tree…"}, new ActionListener()  {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectSourceTreeMenuItemSelected(e);
@@ -101,6 +101,7 @@ public class ApplicationWindow extends JFrame {
         if (menuItem == null) {
             menuItem = new JMenu(menuPath[0]);
             menuBar.add(menuItem);
+            menuBar.validate(); // Refresh [Jon Aquino 2010-10-20]
         }
         for (int i = 1; i < menuPath.length; i++) {
             if (i == menuPath.length - 1) {

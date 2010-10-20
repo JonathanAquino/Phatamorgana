@@ -1,0 +1,9 @@
+// Name: Run Unit Tests
+// Description: Runs all known unit tests using JUnit
+// Author: Jonathan Aquino
+
+context.get("applicationWindow").addMenu(new String[] {"Help", "Run Unit Tests"}, new ActionListener()  {
+    public void actionPerformed(ActionEvent e) {
+        new junit.textui.TestRunner().run(context.get("testSuite"));
+    }
+});
