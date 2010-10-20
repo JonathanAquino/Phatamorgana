@@ -1,6 +1,7 @@
 package com.ning.phatamorgana;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +35,8 @@ public class Application {
         ApplicationWindow applicationWindow = new ApplicationWindow();
         applicationWindow.setVisible(true);
         final Map<String, Object> context = new HashMap<String, Object>();
+        context.put("applicationWindow", applicationWindow);
+        context.put("unitTestClasses", new ArrayList<Class<Object>>());
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {

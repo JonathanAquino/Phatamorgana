@@ -8,8 +8,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Map;
-
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -18,6 +16,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.MenuElement;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
@@ -53,6 +52,9 @@ public class ApplicationWindow extends JFrame {
     
     /** The split pane with left and right parts. */
     private JSplitPane horizontalSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, fileTreeScrollPane, verticalSplitPane);
+
+    /** The menu at the top of the window. */
+    private JMenuBar menuBar = new JMenuBar();
     
     /**
      * Creates a new application window.
@@ -71,31 +73,79 @@ public class ApplicationWindow extends JFrame {
         verticalSplitPane.setDividerLocation(500);
         verticalSplitPane.setOneTouchExpandable(true);
         add(horizontalSplitPane, BorderLayout.CENTER);
-        addMenuBar();
+        addMenus();
     }
 
     /**
-     * Installs the menu bar at the top of the window.
+     * Installs menus at the top of the window.
      */
-    private void addMenuBar() {
-        JMenuBar menuBar = new JMenuBar();
+    private void addMenus() {
         add(menuBar, BorderLayout.NORTH);
-        JMenu fileMenu = new JMenu("File");
-        JMenuItem selectSourceTreeMenuItem = new JMenuItem("Select Source Tree…");
-        selectSourceTreeMenuItem.addActionListener(new ActionListener() {
+        addMenu(new String [] { "File", "Select Source Tree…" }, new ActionListener()  {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    selectSourceTreeMenuItemSelected(e);
-                } catch (Exception x) {
-                    handleException(x);
-                }
+                selectSourceTreeMenuItemSelected(e);
             }
         });
-        menuBar.add(fileMenu);
-        fileMenu.add(selectSourceTreeMenuItem);
     }
     
+
+    /**
+     * Creates the specified menus and submenus.
+     * @param menuPath the strings for the menus and submenus
+     * @param actionListener the handler for the menu
+     * @return the newly created menu item
+     */
+    public JMenuItem addMenu(String[] menuPath, final ActionListener actionListener) {
+        JMenuItem menuItem = getMenuItem(menuPath[0], menuBar);
+        if (menuItem == null) {
+            menuItem = new JMenu(menuPath[0]);
+            menuBar.add(menuItem);
+        }
+        for (int i = 1; i < menuPath.length; i++) {
+            if (i == menuPath.length - 1) {
+                JMenuItem childMenuItem = new JMenuItem(menuPath[i]);
+                menuItem.add(childMenuItem);
+                childMenuItem.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        try {
+                            actionListener.actionPerformed(e);
+                        } catch (Exception x) {
+                            handleException(x);
+                        }
+                    }
+                });
+                return childMenuItem;
+            }
+            JMenuItem childMenuItem = getMenuItem(menuPath[i], menuItem);
+            if (childMenuItem == null) {
+                childMenuItem = new JMenuItem(menuPath[i]);
+            }
+            menuItem.add(childMenuItem);
+            menuItem = childMenuItem;
+        }
+        throw new RuntimeException("Shouldn't get here");
+    }
+    
+    /**
+     * Returns the menu item with the given text
+     * @param string the menu item text to search for
+     * @param parentMenuItem the menu item whose children to inspect
+     * @return the menu item, or null if not found
+     */
+    private JMenuItem getMenuItem(String text, MenuElement parentMenuItem) {
+        if (parentMenuItem instanceof JMenu) {
+            parentMenuItem = ((JMenu)parentMenuItem).getPopupMenu();
+        }
+        for (MenuElement childMenuItem : parentMenuItem.getSubElements()) {
+            if (childMenuItem instanceof JMenuItem && ((JMenuItem)childMenuItem).getText().equals(text)) {
+                return ((JMenuItem)childMenuItem);
+            }
+        }
+        return null;
+    }
+
     /**
      * Responds to the given exception.
      * @param e the Exception that occurred.
