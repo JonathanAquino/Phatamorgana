@@ -8,6 +8,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Map;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -100,7 +101,7 @@ public class ApplicationWindow extends JFrame {
      * @param e the Exception that occurred.
      */
     protected void handleException(Exception e) {
-        e.printStackTrace();
+        e.printStackTrace(System.out);
     }
 
     /**
