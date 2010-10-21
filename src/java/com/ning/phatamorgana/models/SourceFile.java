@@ -86,5 +86,21 @@ public class SourceFile {
         String contents = getContents();
         return contents.substring(0, selectionStart) + SELECTION_START + contents.substring(selectionStart, selectionEnd) + SELECTION_END + contents.substring(selectionEnd);
     }
+
+    /**
+     * Returns the file being represented.
+     * @return  the wrapped File
+     */
+    public File getFile() {
+        return file;
+    }
+
+    /**
+     * Clears the contents from memory, so that they will be re-read
+     * on the next #getContents call.
+     */
+    public void clearCachedContents() {
+        contents = null;
+    }
     
 }

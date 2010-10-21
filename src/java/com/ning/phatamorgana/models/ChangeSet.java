@@ -1,5 +1,10 @@
 package com.ning.phatamorgana.models;
 
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -7,17 +12,8 @@ import org.apache.commons.lang.StringUtils;
  */
 public class ChangeSet {
 
-    /** Marker for the start of code before a change. */
-    private static final String OLD_START = "{OLD-START}";
-    
-    /** Marker for the end of code before a change. */
-    private static final String OLD_END = "{OLD-END}";
-
-    /** Marker for the start of code after a change. */
-    private static final String NEW_START = "{NEW-START}";
-    
-    /** Marker for the end of code after a change. */
-    private static final String NEW_END = "{NEW-END}";
+    /** The changes in the change set. */
+    private List<Change> changes = new ArrayList<Change>();
     
     /**
      * Sets the contents of the given file.
@@ -26,17 +22,22 @@ public class ChangeSet {
      */
     public void setContents(SourceFile sourceFile, String contents) {
         contents = removeSelectionMarkers(contents);
+        changes.add(new Change(sourceFile.getFile(), sourceFile.getContents(), contents));
     }
 
     /**
      * Sets the contents of the given file in a way that can be previewed.
-     * {OLD-START}...{OLD-END}{NEW-START}...{NEW-END} markers are used to
-     * indicate changes in the file.
+     * {OLD-START-1}...{OLD-END-1}{NEW-START-1}...{NEW-END-1} markers are used to
+     * indicate changes in the file. The "1" is a number used to group markers 
+     * that are considered to be part of the same change in the file.
+     * When the user deletes a change in the preview, all changes with this number
+     * are deleted.
      * @param sourceFile the source-code file
      * @param contents the new contents of the file, with change markers
      */
     public void setContentsWithMarkers(SourceFile sourceFile, String contentsWithMarkers) {
         contentsWithMarkers = removeSelectionMarkers(contentsWithMarkers);
+        throw new RuntimeException("Not yet implemented");
     }
     
     /**
@@ -47,5 +48,26 @@ public class ChangeSet {
      */
     protected String removeSelectionMarkers(String contents) {
         return StringUtils.replace(StringUtils.replace(contents, SourceFile.SELECTION_START, ""), SourceFile.SELECTION_END, "");
+    }
+    
+
+    /**
+     * Writes the new contents to disk
+     * @param changeSet
+     */
+    public void execute() {
+        for (Change change : changes) {
+            change.execute();
+        }
+    }
+    
+    /**
+     * Writes the old contents to disk
+     * @param changeSet
+     */
+    public void unexecute() {
+        for (Change change : changes) {
+            change.unexecute();
+        }
     }
 }

@@ -31,6 +31,7 @@ public class BeanShellScriptLoader {
             Interpreter interpreter = new Interpreter();
             interpreter.set("context", context);
             interpreter.eval("import com.ning.phatamorgana.models.*");
+            interpreter.eval("import java.util.regex.*");
             for (File f : directory.listFiles()) {
                 if (f.isDirectory()) {
                     loadScripts(f);

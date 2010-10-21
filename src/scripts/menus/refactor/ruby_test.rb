@@ -6,4 +6,4 @@ class JRubySmokeTest < UnitTest
 
 end
 
-context.get("unitTests").add(JRubySmokeTest.new);
+$context.get("unitTests").add(JRubySmokeTest.new);

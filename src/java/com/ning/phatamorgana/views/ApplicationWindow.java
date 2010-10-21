@@ -22,6 +22,7 @@ import javax.swing.MenuElement;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
+import com.ning.phatamorgana.models.ChangeSet;
 import com.ning.phatamorgana.models.Codebase;
 import com.ning.phatamorgana.models.Documentation;
 import com.ning.phatamorgana.models.SourceFile;
@@ -41,7 +42,7 @@ public class ApplicationWindow extends JFrame {
     /** The text area for displaying the contents of a file. */
     private JTextArea codeTextArea = new JTextArea() {
         {
-            setFont(Font.decode("monospaced-12"));
+            setFont(Font.decode("monospaced-14"));
         }
     };
     
@@ -174,19 +175,24 @@ public class ApplicationWindow extends JFrame {
     private void selectSourceTreeMenuItemSelected(ActionEvent e) {
         JFileChooser fileChooser = new JFileChooser(); 
         fileChooser.setDialogTitle("Select Source Tree");
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         fileChooser.setAcceptAllFileFilterUsed(false);
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File directory = fileChooser.getSelectedFile().isDirectory() ? fileChooser.getSelectedFile() : fileChooser.getSelectedFile().getParentFile();
+            File file = fileChooser.getSelectedFile().isFile() ? fileChooser.getSelectedFile() : null;
             if (fileTree == null) {
-                fileTree = createFileTree(fileChooser.getSelectedFile().getAbsolutePath());
+                fileTree = createFileTree(directory.getAbsolutePath());
             } else {
                 try {
-                    fileTree.setRootPath(fileChooser.getSelectedFile().getAbsolutePath());
+                    fileTree.setRootPath(directory.getAbsolutePath());
                 } catch (FileNotFoundException x) {
                     throw new RuntimeException(x);
                 }
             }
-            context.put("codebase", new Codebase(fileChooser.getSelectedFile()));
+            context.put("codebase", new Codebase(directory));
+            if (file != null) {
+                setCurrentSourceFile(new SourceFile(file));
+            }
         }
     }
 
@@ -196,7 +202,7 @@ public class ApplicationWindow extends JFrame {
      * @return the newly created FileTree
      */
     private FileTree createFileTree(String path) {
-        FileTree fileTree;
+        final FileTree fileTree;
         try {
             fileTree = new FileTree(path);
         } catch (Exception x) {
@@ -206,24 +212,35 @@ public class ApplicationWindow extends JFrame {
         fileTree.addTreeSelectionListener(new TreeSelectionListener() {
             @Override
             public void valueChanged(TreeSelectionEvent e) {
-                fileTreeNodeSelected(e);
+                File file = fileTree.getFile(e.getPath());
+                if (file != null && file.isFile()) {
+                    setCurrentSourceFile(new SourceFile(file));
+                }
             }
         });
         return fileTree;
     }
 
     /**
-     * Called when the user clicks a node in the file tree.
-     * @param e the event for the selection of the tree node
+     * Sets the current file that the user is operating on
+     * @param currentSourceFile  the file containing the code
      */
-    private void fileTreeNodeSelected(TreeSelectionEvent e) {
-        File file = fileTree.getFile(e.getPath());
-        if (file != null && file.isFile()) {
-            SourceFile sourceFile = new SourceFile(file);
-            sourceFile.setSelection(codeTextArea.getSelectionStart(), codeTextArea.getSelectionEnd());
-            codeTextArea.setText(sourceFile.getContents());
-            codeTextArea.setCaretPosition(0);
-        }
+    private void setCurrentSourceFile(SourceFile currentSourceFile) {
+        currentSourceFile.setSelection(codeTextArea.getSelectionStart(), codeTextArea.getSelectionEnd());
+        context.put("currentSourceFile", currentSourceFile);
+        codeTextArea.setText(currentSourceFile.getContents());
+        codeTextArea.setCaretPosition(0);
+    }
+    
+    /**
+     * Writes the ChangeSet to disk, and updates the UI.
+     * @param changeSet  a set of changes to a set of files
+     */
+    public void execute(ChangeSet changeSet) {
+        changeSet.execute();
+        SourceFile currentSourceFile = (SourceFile)context.get("currentSourceFile");
+        currentSourceFile.clearCachedContents();
+        setCurrentSourceFile(currentSourceFile);
     }
     
 }
