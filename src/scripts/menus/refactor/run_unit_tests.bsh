@@ -2,7 +2,7 @@
 // Description: Runs all unit tests for the scripts
 // Author: Jonathan Aquino
 
-context.get("applicationWindow").addMenu(new String[] {"Help", "Run Unit Tests"}, new ActionListener()  {
+context.get("applicationWindow").addMenu(new String[] {"Refactor", "Test", "Run Phatamorgana Unit Tests"}, new ActionListener()  {
     public void actionPerformed(ActionEvent e) {
 		List assertions = new ArrayList();
 		List failures = new ArrayList();

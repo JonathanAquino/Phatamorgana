@@ -39,21 +39,16 @@ public class Application {
         applicationWindow.setVisible(true);
         context.put("applicationWindow", applicationWindow);
         context.put("unitTests", new ArrayList<UnitTest>());
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    new BeanShellScriptLoader(context).loadScripts(new File(scriptPath));
-                } catch (Exception e) {
-                    e.printStackTrace(System.out);
-                }
-                try {
-                    new JRubyScriptLoader(context).loadScripts(new File(scriptPath));
-                } catch (Exception e) {
-                    e.printStackTrace(System.out);
-                }
-            }
-        });
+        try {
+            new BeanShellScriptLoader(context).loadScripts(new File(scriptPath));
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+        }
+        try {
+            new JRubyScriptLoader(context).loadScripts(new File(scriptPath));
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+        }
     }
 
     /**

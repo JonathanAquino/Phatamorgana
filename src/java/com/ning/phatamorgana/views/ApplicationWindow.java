@@ -89,6 +89,9 @@ public class ApplicationWindow extends JFrame {
      */
     private void addMenus() {
         add(menuBar, BorderLayout.NORTH);
+        menuBar.add(new JMenu("File"));
+        menuBar.add(new JMenu("Refactor"));
+        menuBar.add(new JMenu("Help"));
         addMenu(new String[] {"File", "Select Source Tree…"}, new ActionListener()  {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -105,17 +108,16 @@ public class ApplicationWindow extends JFrame {
      * @return the newly created menu item
      */
     public JMenuItem addMenu(String[] menuPath, final ActionListener actionListener) {
-        JMenuItem menuItem = getMenuItem(menuPath[0], menuBar);
-        if (menuItem == null) {
-            menuItem = new JMenu(menuPath[0]);
-            menuBar.add(menuItem);
-            menuBar.validate(); // Refresh [Jon Aquino 2010-10-20]
+        JMenu menu = getMenu(menuPath[0], menuBar);
+        if (menu == null) {
+            menu = new JMenu(menuPath[0]);
+            menuBar.add(menu);
         }
         for (int i = 1; i < menuPath.length; i++) {
             if (i == menuPath.length - 1) {
-                JMenuItem childMenuItem = new JMenuItem(menuPath[i]);
-                menuItem.add(childMenuItem);
-                childMenuItem.addActionListener(new ActionListener() {
+                JMenuItem menuItem = new JMenuItem(menuPath[i]);
+                menu.add(menuItem);
+                menuItem.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         try {
@@ -125,31 +127,31 @@ public class ApplicationWindow extends JFrame {
                         }
                     }
                 });
-                return childMenuItem;
+                return menuItem;
             }
-            JMenuItem childMenuItem = getMenuItem(menuPath[i], menuItem);
-            if (childMenuItem == null) {
-                childMenuItem = new JMenuItem(menuPath[i]);
+            JMenu childMenu = getMenu(menuPath[i], menu);
+            if (childMenu == null) {
+                childMenu = new JMenu(menuPath[i]);
             }
-            menuItem.add(childMenuItem);
-            menuItem = childMenuItem;
+            menu.add(childMenu);
+            menu = childMenu;
         }
         throw new RuntimeException("Shouldn't get here");
     }
     
     /**
-     * Returns the menu item with the given text
+     * Returns the menu with the given text
      * @param string the menu item text to search for
      * @param parentMenuItem the menu item whose children to inspect
      * @return the menu item, or null if not found
      */
-    private JMenuItem getMenuItem(String text, MenuElement parentMenuItem) {
+    private JMenu getMenu(String text, MenuElement parentMenuItem) {
         if (parentMenuItem instanceof JMenu) {
             parentMenuItem = ((JMenu)parentMenuItem).getPopupMenu();
         }
         for (MenuElement childMenuItem : parentMenuItem.getSubElements()) {
-            if (childMenuItem instanceof JMenuItem && ((JMenuItem)childMenuItem).getText().equals(text)) {
-                return ((JMenuItem)childMenuItem);
+            if (childMenuItem instanceof JMenu&& ((JMenu)childMenuItem).getText().equals(text)) {
+                return ((JMenu)childMenuItem);
             }
         }
         return null;
