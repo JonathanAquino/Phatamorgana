@@ -10,6 +10,12 @@ import org.apache.commons.io.FileUtils;
  */
 public class SourceFile {
 
+    /** Marker for the start of the selection. */
+    public static final String SELECTION_START = "{SELECTION-START}";
+    
+    /** Marker for the end of the selection. */
+    public static final String SELECTION_END = "{SELECTION-END}";
+    
     /** The file being represented. */
     private File file;
     
@@ -78,7 +84,7 @@ public class SourceFile {
      */
     public String getContentsWithSelectionMarkers() {
         String contents = getContents();
-        return contents.substring(0, selectionStart) + "{SELECTION-START}" + contents.substring(selectionStart, selectionEnd) + "{SELECTION-END}" + contents.substring(selectionEnd);
+        return contents.substring(0, selectionStart) + SELECTION_START + contents.substring(selectionStart, selectionEnd) + SELECTION_END + contents.substring(selectionEnd);
     }
     
 }

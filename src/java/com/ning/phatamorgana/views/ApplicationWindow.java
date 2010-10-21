@@ -8,6 +8,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Map;
+
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -20,6 +22,7 @@ import javax.swing.MenuElement;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
+import com.ning.phatamorgana.models.Codebase;
 import com.ning.phatamorgana.models.SourceFile;
 
 /**
@@ -55,11 +58,16 @@ public class ApplicationWindow extends JFrame {
 
     /** The menu at the top of the window. */
     private JMenuBar menuBar = new JMenuBar();
+
+    /** Hooks into the application. */
+    private Map<String, Object> context;
     
     /**
      * Creates a new application window.
+     * @param context hooks into the application
      */
-    public ApplicationWindow() {
+    public ApplicationWindow(Map<String, Object> context) {
+        this.context = context;
         setTitle("Phatamorgana Ð Refactoring Tool for Dynamic Programming Languages");
         setSize(900, 665);
         getContentPane().setLayout(new BorderLayout());
@@ -174,6 +182,7 @@ public class ApplicationWindow extends JFrame {
                     throw new RuntimeException(x);
                 }
             }
+            context.put("codebase", new Codebase(fileChooser.getSelectedFile()));
         }
     }
 

@@ -34,9 +34,9 @@ public class Application {
      */
     public void run(final String scriptPath) {
         initializeLAF();
-        ApplicationWindow applicationWindow = new ApplicationWindow();
-        applicationWindow.setVisible(true);
         final Map<String, Object> context = new HashMap<String, Object>();
+        ApplicationWindow applicationWindow = new ApplicationWindow(context);
+        applicationWindow.setVisible(true);
         context.put("applicationWindow", applicationWindow);
         context.put("unitTests", new ArrayList<UnitTest>());
         SwingUtilities.invokeLater(new Runnable() {
