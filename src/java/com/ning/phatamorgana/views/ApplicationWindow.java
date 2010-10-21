@@ -19,6 +19,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.MenuElement;
+import javax.swing.SwingUtilities;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
@@ -42,7 +45,17 @@ public class ApplicationWindow extends JFrame {
     /** The text area for displaying the contents of a file. */
     private JTextArea codeTextArea = new JTextArea() {
         {
-            setFont(Font.decode("monospaced-14"));
+            setFont(Font.decode("monospaced-13"));
+            setTabSize(4);
+            addCaretListener(new CaretListener() {
+                @Override
+                public void caretUpdate(CaretEvent e) {
+                    SourceFile currentSourceFile = getCurrentSourceFile();
+                    if (currentSourceFile != null) {
+                        currentSourceFile.setSelection(codeTextArea.getSelectionStart(), codeTextArea.getSelectionEnd());
+                    }
+                }
+            });
         }
     };
     
@@ -68,12 +81,17 @@ public class ApplicationWindow extends JFrame {
      * Creates a new application window.
      * @param context hooks into the application
      */
-    public ApplicationWindow(Map<String, Object> context) {
+    public ApplicationWindow(final Map<String, Object> context) {
         this.context = context;
-        setTitle("Phatamorgana – Refactoring Tool for Dynamic Programming Languages");
-        setSize(900, 665);
+        setTitle("Phatamorgana – Refactoring Platform for Scripting Languages");
+        setSize(1200, 665);
         getContentPane().setLayout(new BorderLayout());
         addWindowListener(new WindowAdapter() {
+            public void windowOpened(WindowEvent e) {
+                if (context.get("codebase") == null) {
+                    promptForSourceTree();
+                }
+            }
             public void windowClosing(WindowEvent e) { 
                 System.exit(0); 
             }
@@ -97,7 +115,7 @@ public class ApplicationWindow extends JFrame {
         addMenu(null, new String[] {"File", "Select Source Tree…"}, new ActionListener()  {
             @Override
             public void actionPerformed(ActionEvent e) {
-                selectSourceTreeMenuItemSelected(e);
+                promptForSourceTree();
             }
         });
     }
@@ -167,12 +185,19 @@ public class ApplicationWindow extends JFrame {
     protected void handleException(Exception e) {
         e.printStackTrace(System.out);
     }
+    
+    /**
+     * Displays an error message.
+     * @param errorMessage  a brief error message
+     */
+    public void showErrorMessage(String errorMessage) {
+        System.out.println(errorMessage);
+    }
 
     /**
      * Shows a file dialog for choosing the source tree to operate on.
-     * @param e the event for the selection of the menu item
      */
-    private void selectSourceTreeMenuItemSelected(ActionEvent e) {
+    private void promptForSourceTree() {
         JFileChooser fileChooser = new JFileChooser(); 
         fileChooser.setDialogTitle("Select Source Tree");
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
@@ -226,7 +251,6 @@ public class ApplicationWindow extends JFrame {
      * @param currentSourceFile  the file containing the code
      */
     private void setCurrentSourceFile(SourceFile currentSourceFile) {
-        currentSourceFile.setSelection(codeTextArea.getSelectionStart(), codeTextArea.getSelectionEnd());
         context.put("currentSourceFile", currentSourceFile);
         codeTextArea.setText(currentSourceFile.getContents());
         codeTextArea.setCaretPosition(0);
@@ -238,9 +262,33 @@ public class ApplicationWindow extends JFrame {
      */
     public void execute(ChangeSet changeSet) {
         changeSet.execute();
-        SourceFile currentSourceFile = (SourceFile)context.get("currentSourceFile");
+        reloadCurrentSourceFile();
+    }
+
+    /**
+     * Refreshes the display of the current file
+     */
+    private void reloadCurrentSourceFile() {
+        final int horizontalScroll = codeScrollPane.getHorizontalScrollBar().getValue();
+        final int verticalScroll = codeScrollPane.getVerticalScrollBar().getValue();
+        SourceFile currentSourceFile = getCurrentSourceFile();
         currentSourceFile.clearCachedContents();
         setCurrentSourceFile(currentSourceFile);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                codeScrollPane.getHorizontalScrollBar().setValue(horizontalScroll);
+                codeScrollPane.getVerticalScrollBar().setValue(verticalScroll);                
+            }
+        });
+    }
+
+    /**
+     * Returns the current file that the user is operating on.
+     * @return  the file containing the code
+     */
+    private SourceFile getCurrentSourceFile() {
+        return (SourceFile)context.get("currentSourceFile");
     }
     
 }
