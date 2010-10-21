@@ -17,7 +17,7 @@ public class JRubyScriptLoader {
     private Map<String, Object> context;
     
     /**
-     * Creates the BeanJRubyShell loader.
+     * Creates the JRuby loader.
      * @param context hooks into the application
      */
     public JRubyScriptLoader(Map<String, Object> context) {
@@ -25,7 +25,7 @@ public class JRubyScriptLoader {
     }
     
     /**
-     * Loads the BeanShell scripts in the given path and its subdirectories.
+     * Loads the JRuby scripts in the given path and its subdirectories.
      * @param directory the path to the scripts
      */
     public void loadScripts(File directory) {
