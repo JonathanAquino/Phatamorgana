@@ -1,7 +1,3 @@
-// Name: BeanShell Smoke Test
-// Description: Smoke test that checks that BeanShell unit tests are working
-// Author: Jonathan Aquino
-
 public class BeanShellSmokeTest extends UnitTest {
 
     public void run() {

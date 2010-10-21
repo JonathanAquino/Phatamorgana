@@ -1,7 +1,3 @@
-# Name: JRuby Smoke Test
-# Description: Smoke test that checks that JRuby unit tests are working
-# Author: Jonathan Aquino
-
 class JRubySmokeTest < UnitTest
 
 	def run

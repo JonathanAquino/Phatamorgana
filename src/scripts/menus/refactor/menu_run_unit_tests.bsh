@@ -1,8 +1,9 @@
-// Name: Run Unit Tests
-// Description: Runs all unit tests for the scripts
-// Author: Jonathan Aquino
-
-context.get("applicationWindow").addMenu(new String[] {"Refactor", "Test", "Run Phatamorgana Unit Tests"}, new ActionListener()  {
+Documentation documentation = new Documentation(
+	"Runs all unit tests for the Phatamorgana scripts.",
+	"Jonathan Aquino",
+	"0.1"
+);
+context.get("applicationWindow").addMenu(documentation, new String[] {"Refactor", "Run Phatamorgana Unit Tests"}, new ActionListener()  {
     public void actionPerformed(ActionEvent e) {
 		List assertions = new ArrayList();
 		List failures = new ArrayList();

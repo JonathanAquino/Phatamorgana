@@ -23,6 +23,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
 import com.ning.phatamorgana.models.Codebase;
+import com.ning.phatamorgana.models.Documentation;
 import com.ning.phatamorgana.models.SourceFile;
 
 /**
@@ -92,7 +93,7 @@ public class ApplicationWindow extends JFrame {
         menuBar.add(new JMenu("File"));
         menuBar.add(new JMenu("Refactor"));
         menuBar.add(new JMenu("Help"));
-        addMenu(new String[] {"File", "Select Source Tree…"}, new ActionListener()  {
+        addMenu(null, new String[] {"File", "Select Source Tree…"}, new ActionListener()  {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectSourceTreeMenuItemSelected(e);
@@ -103,11 +104,12 @@ public class ApplicationWindow extends JFrame {
 
     /**
      * Creates the specified menus and submenus.
+     * @param documentation documentation for the menu
      * @param menuPath the strings for the menus and submenus
      * @param actionListener the handler for the menu
      * @return the newly created menu item
      */
-    public JMenuItem addMenu(String[] menuPath, final ActionListener actionListener) {
+    public JMenuItem addMenu(Documentation documentation, String[] menuPath, final ActionListener actionListener) {
         JMenu menu = getMenu(menuPath[0], menuBar);
         if (menu == null) {
             menu = new JMenu(menuPath[0]);
