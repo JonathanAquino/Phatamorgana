@@ -206,7 +206,9 @@ public class ApplicationWindow extends JFrame {
     private void fileTreeNodeSelected(TreeSelectionEvent e) {
         File file = fileTree.getFile(e.getPath());
         if (file != null && file.isFile()) {
-            codeTextArea.setText(new SourceFile(file).getContents());
+            SourceFile sourceFile = new SourceFile(file);
+            sourceFile.setSelection(codeTextArea.getSelectionStart(), codeTextArea.getSelectionEnd());
+            codeTextArea.setText(sourceFile.getContents());
             codeTextArea.setCaretPosition(0);
         }
     }

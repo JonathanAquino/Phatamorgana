@@ -14,33 +14,44 @@ public class SourceFile {
     private File file;
     
     /** The contents of the file. */
-    private String contents;
+    protected String contents;
+    
+    /** The start of the selection. */
+    protected int selectionStart = 0;
+    
+    /** The end of the selection. */
+    protected int selectionEnd = 0;
 
     /**
      * Creates a SourceFile.
      * @param file the file being represented
      */
     public SourceFile(File file) {
-        this(file, null);
-    }
-    
-    /**
-     * Creates a SourceFile.
-     * @param file the file being represented
-     * @param contents the contents of the file, or null to load it later
-     */
-    public SourceFile(File file, String contents) {
         if (!file.isFile()) {
             throw new RuntimeException("Not a file: " + file.getAbsolutePath());
         }
         this.file = file;
-        this.contents = contents;
     }
+    
+    /**
+     * Creates a SourceFile.
+     */
+    protected SourceFile() {
+    }
+    
+    /**
+     * Sets the boundaries of the selection
+     * @param selectionStart the position of the selection start
+     * @param selectionEnd the position of the selection end
+     */
+    public void setSelection(int selectionStart, int selectionEnd) {
+        this.selectionStart = selectionStart;
+        this.selectionEnd = selectionEnd;
+    } 
     
     /**
      * Returns the contents of the file.
      * @return the source code inside the file
-     * @throws IOException 
      */
     public String getContents() {
         if (contents != null) {
@@ -58,6 +69,16 @@ public class SourceFile {
                 throw new RuntimeException(e2);
             }
         }
+    }
+    
+    /**
+     * Returns the contents of the file, with the selection delimited by
+     * {SELECTION-START} and {SELECTION-END} markers.
+     * @return the source code inside the file
+     */
+    public String getContentsWithSelectionMarkers() {
+        String contents = getContents();
+        return contents.substring(0, selectionStart) + "{SELECTION-START}" + contents.substring(selectionStart, selectionEnd) + "{SELECTION-END}" + contents.substring(selectionEnd);
     }
     
 }
