@@ -32,9 +32,9 @@ public class ChangeSet {
      * When the user deletes a change in the preview, all changes with this number
      * are deleted.
      * @param sourceFile the source-code file
-     * @param contents the new contents of the file, with change markers
+     * @param contentsWithMarkers the new contents of the file, with change markers
      */
-    public void setContentsWithMarkers(SourceFile sourceFile, String contentsWithMarkers) {
+    public void setContentsWithPreview(SourceFile sourceFile, String contentsWithMarkers) {
         contentsWithMarkers = removeSelectionMarkers(contentsWithMarkers);
         throw new RuntimeException("Not yet implemented");
     }
